@@ -74,3 +74,28 @@ def _serve_transform(df: pd.DataFrame) -> pd.DataFrame:
     df = df.reindex(columns=FEATURE_COLS, fill_value=0)
     
     return df
+
+def predict(input_dict:dict) -> str:
+    
+    df = pd.DataFrame([input_dict])
+    df_enc = _serve_transform(df)
+
+    try:
+        preds = model.predict(df_enc)
+
+        if hasattr(preds, "tolist"):
+            preds = preds.tolist()
+
+        if isinstance(preds, (list, tuple)) and len(preds) == 1:
+            result = preds[0]
+        else:
+            result = preds
+
+    except Exception as e:
+
+        raise Exception(f"Model prediction failed: {e}")
+    
+    if result ==1:
+        return "Likely to churn"
+    else:
+        return "Not likely to churn"
