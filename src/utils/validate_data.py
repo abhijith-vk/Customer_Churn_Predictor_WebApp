@@ -1,3 +1,4 @@
+import pandas as pd
 import great_expectations as ge
 from typing import Tuple, List
 
@@ -5,7 +6,23 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
 
     print("Starting data validation with Great Expectations....")
 
-    ge_df = ge.dataset.PandasDataset(df)
+    # === CRITICAL FIX: Safe Data Type Conditioning ===
+    # Create a local copy to avoid mutating the training dataframe unpredictably
+    df_clean = df.copy()
+
+    # Convert whitespace-only values to NaN, cast to numeric float, and fill with 0.0
+    if "TotalCharges" in df_clean.columns:
+        df_clean["TotalCharges"] = pd.to_numeric(df_clean["TotalCharges"].replace(r'^\s*$', None, regex=True))
+        df_clean["TotalCharges"] = df_clean["TotalCharges"].fillna(0.0)
+
+    if "MonthlyCharges" in df_clean.columns:
+        df_clean["MonthlyCharges"] = pd.to_numeric(df_clean["MonthlyCharges"], errors='coerce').fillna(0.0)
+
+    if "tenure" in df_clean.columns:
+        df_clean["tenure"] = pd.to_numeric(df_clean["tenure"], errors='coerce').fillna(0)
+
+    # Initialize Great Expectations with the properly typed clean copy
+    ge_df = ge.dataset.PandasDataset(df_clean)
 
     print("Validating schema and required columns...")
 
@@ -39,6 +56,7 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
 
     print("Validating numeric ranges and buisness constraints...")
 
+    # These checks will now safely succeed without throwing a TypeError
     ge_df.expect_column_values_to_be_between("tenure", min_value=0)
     ge_df.expect_column_values_to_be_between("MonthlyCharges", min_value=0)
     ge_df.expect_column_values_to_be_between("TotalCharges", min_value=0)    
@@ -52,11 +70,12 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
 
     print("Validating data consistency...")
 
+    # This pair comparison evaluates cleanly now that both columns are float types
     ge_df.expect_column_pair_values_A_to_be_greater_than_B(
         column_A="TotalCharges",
         column_B="MonthlyCharges",
         or_equal=True,
-        mostly=0.95  # Allows 5% exceptions for edge cases
+        mostly=0.95  # Allows 5% exceptions for edge cases (like tenure=0 new signups)
     )
 
     print("Running complete validation suite...")

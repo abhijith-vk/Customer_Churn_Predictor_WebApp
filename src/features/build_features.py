@@ -28,8 +28,8 @@ def build_features(df: pd.DataFrame, target_col: str = "Churn") -> pd.DataFrame:
 
     print(f"  Found {len(obj_cols)} categorical and {len(numeric_cols)} numeric columns")
 
-    binary_cols = [c for c in obj_cols if df[c].dropna().unique() == 2]
-    multi_cols = [c for c in obj_cols if df[c].dropna().unique() > 2]
+    binary_cols = [c for c in obj_cols if df[c].dropna().nunique() == 2]
+    multi_cols = [c for c in obj_cols if df[c].dropna().nunique() > 2]
 
     print(f"  Binary features: {len(binary_cols)} | Multi-category features: {len(multi_cols)}")
     if binary_cols:
