@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abhijith-v-k/Desktop/Tensorflow_ML/Customer_Churn_Predictor/mlruns/712881953197652722/d33bfa2cfe404bb19eca4337ee179eca/artifacts
+end_time: 1781972173249
+entry_point_name: ''
+experiment_id: '712881953197652722'
+lifecycle_stage: active
+run_id: d33bfa2cfe404bb19eca4337ee179eca
+run_name: rebellious-sloth-576
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1781972168150
+status: 3
+tags: []
+user_id: abhijith-v-k

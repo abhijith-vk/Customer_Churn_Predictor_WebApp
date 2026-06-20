@@ -1,0 +1,23 @@
+artifact_path: file:///home/abhijith-v-k/Desktop/Tensorflow_ML/Customer_Churn_Predictor/mlruns/712881953197652722/models/m-22aa4a600bfd4a999b01aad0719712c3/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.13
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.5.2
+    skops_trusted_types: null
+mlflow_version: 3.13.0
+model_id: m-22aa4a600bfd4a999b01aad0719712c3
+model_size_bytes: 1380087
+model_uuid: m-22aa4a600bfd4a999b01aad0719712c3
+prompts: null
+run_id: d33bfa2cfe404bb19eca4337ee179eca
+utc_time_created: '2026-06-20 16:16:09.058413'
